@@ -1,8 +1,6 @@
-const express = require('express');
+const router = require('express').Router();
 
 const UsersDb = require('./users-model');
-
-const router = express.Router();
 
 router.get('/', (req, res) => {
   UsersDb.getUsers()

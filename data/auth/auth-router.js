@@ -1,15 +1,21 @@
-const express = require('express');
+const router = require('express').Router();
+const bcrypt = require('bcryptjs');
 
 const UsersDb = require('../users/users-model');
-
-const router = express.Router();
 
 router.post('/register', validatePostBody, (req, res) => {
   const { username, password } = req.body;
 
-  UsersDb.addUser({ username, password })
-    .then(user => {
-      res.status(201).json(user);
+  const passwordHash = bcrypt.hashSync(password, 10);
+
+  const user = {
+    username,
+    password: passwordHash
+  }
+
+  UsersDb.addUser(user)
+    .then(saved => {
+      res.status(201).json(saved);
     })
     .catch(err => {
       res.status(500).json({
