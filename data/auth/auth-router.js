@@ -13,26 +13,28 @@ router.post('/register', validatePostBody, (req, res) => {
     })
     .catch(err => {
       res.status(500).json({
-        errorMessage: 'User account creation failed!',
+        errorMessage: 'Account creation failed!',
         stack: err.stack
       })
     })
 })
 
-// router.post('/login', (req, res) => {
-//   const { username, password } = req.body;
+router.post('/login', validatePostBody, (req, res) => {
+  const user = req.body;
 
-//   UsersDb.addUser({ username, password })
-//     .then(user => {
-//       res.status(202).json(user);
-//     })
-//     .catch(err => {
-//       res.status(500).json({
-//         errorMessage: 'Invalid Credentials!',
-//         stack: err.stack
-//       })
-//     })
-// })
+  UsersDb.findBy(user)
+    .then(user => {
+      res.status(200).json({
+        message: `Welcome ${user.username}!`
+      });
+    })
+    .catch(err => {
+      res.status(500).json({
+        errorMessage: 'User not found!',
+        stack: err.stack
+      })
+    })
+})
 
 function validatePostBody(req, res, next) {
   const contentToPost = req.body;
