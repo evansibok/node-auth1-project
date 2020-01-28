@@ -19,24 +19,28 @@ router.post('/register', validatePostBody, (req, res) => {
     })
     .catch(err => {
       res.status(500).json({
-        errorMessage: 'Account creation failed!',
+        errorMessage: 'Account not created!',
         stack: err.stack
       })
     })
 })
 
 router.post('/login', validatePostBody, (req, res) => {
-  const user = req.body;
+  let { username, password } = req.body;
 
-  UsersDb.findBy(user)
+  UsersDb.findBy({ username })
     .then(user => {
-      res.status(200).json({
-        message: `Welcome ${user.username}!`
-      });
+      if (user && bcrypt.compareSync(password, user.password)) {
+        res.status(200).json({
+          message: `Welcome ${user.username.toUpperCase()}!`
+        })
+      } else {
+        res.status(404).json({ message: `User not found!` })
+      }
     })
     .catch(err => {
       res.status(500).json({
-        errorMessage: 'User not found!',
+        errorMessage: err.message,
         stack: err.stack
       })
     })
