@@ -1,14 +1,11 @@
 const express = require('express');
-const helmet = require('helmet');
-const cors = require('cors');
 
 const routes = require('./routes');
+const rootMiddleware = require('./root-middleware');
 
 const app = express();
 
-app.use(helmet());
-app.use(cors());
-app.use(express.json());
+rootMiddleware(app)
 
 app.use('/api', routes);
 
